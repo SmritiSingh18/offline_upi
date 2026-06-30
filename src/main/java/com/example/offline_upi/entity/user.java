@@ -1,10 +1,13 @@
 package com.example.offline_upi.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 @Data
@@ -27,7 +30,12 @@ public class user {
     @Column(nullable = false)
     private String pin;
     
-    @Column(nullable = false)
-    private Double walletBalance;
+    @OneToOne(
+        mappedBy = "user",
+        cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY
+    )
+    private Wallet wallet;
+
     
 }
