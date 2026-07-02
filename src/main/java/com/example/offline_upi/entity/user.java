@@ -22,7 +22,7 @@ public class user {
     private String fullname;
 
     @Column(unique = true,nullable = false)
-    private String phonenumber;
+    private String phoneNumber;
 
     @Column(unique = true,nullable = false)
     private String upiId;
@@ -31,7 +31,7 @@ public class user {
     private String pin;
     
     @OneToOne(
-        mappedBy = "user",
+        mappedBy = "User",
         cascade = CascadeType.ALL,
         fetch = FetchType.LAZY
     )

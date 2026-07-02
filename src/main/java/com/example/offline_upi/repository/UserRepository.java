@@ -8,7 +8,7 @@ import com.example.offline_upi.entity.user;
 
 
 public interface UserRepository extends JpaRepository<user,Long> {
-    Optional<user>  findByPhonenumber(String phonenumber);
+    Optional<user>  findByPhoneNumber(String phoneNumber);
     Optional<user>  findByUpiId(String upiId);
     boolean existsByPhoneNumber(String phoneNumber);
     boolean existsByUpiId(String upiID);
