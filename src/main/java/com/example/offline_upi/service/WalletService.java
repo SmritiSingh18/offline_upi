@@ -58,6 +58,22 @@ public class WalletService {
 
 
         }
+        public void deductMoney(String walletNumber,BigDecimal amount){
+            Wallet wallet=walletRepository
+                          .findByWalletNumber(walletNumber)
+                          .orElseThrow(
+                            () ->
+                            new RuntimeException("Wallet Not Founr!")
+                          );
+
+                    if(wallet.getBalance().compareTo(amount)<0){
+                        throw new RuntimeException("Insufficient Balance");
+                    }
+
+                    wallet.setBalance(wallet.getBalance().subtract(amount));
+
+                    walletRepository.save(wallet);
+        }
 
     }
  
