@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "users")
-public class user {
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -31,7 +31,7 @@ public class user {
     private String pin;
     
     @OneToOne(
-        mappedBy = "User",
+        mappedBy = "user",
         cascade = CascadeType.ALL,
         fetch = FetchType.LAZY
     )

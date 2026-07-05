@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.offline_upi.dto.RegisterUserRequest;
 import com.example.offline_upi.dto.UserResponse;
 import com.example.offline_upi.entity.Wallet;
-import com.example.offline_upi.entity.user;
+import com.example.offline_upi.entity.User;
 import com.example.offline_upi.enums.WalletStatus;
 import com.example.offline_upi.repository.UserRepository;
 
@@ -20,11 +20,11 @@ public class UserService {
     }
 
     public UserResponse registerUser(RegisterUserRequest request){
-       user User =new user();
-       User.setFullname(request.getFullname());
-       User.setPhoneNumber(request.getPhoneNumber());
-       User.setUpiId(request.getUpiId());
-       User.setPin(request.getPin());
+       User user =new User();
+       user.setFullname(request.getFullname());
+       user.setPhoneNumber(request.getPhoneNumber());
+       user.setUpiId(request.getUpiId());
+       user.setPin(request.getPin());
        
        Wallet wallet=new Wallet();
 
@@ -32,11 +32,11 @@ public class UserService {
        wallet.setBalance(BigDecimal.ZERO);
        wallet.setStatus(WalletStatus.ACTIVE);
 
-       User.setWallet(wallet);
-       wallet.setUser(User);
+       user.setWallet(wallet);
+       wallet.setUser(user);
 
 
-       user savedUser=userRepository.save(User);
+       User savedUser=userRepository.save(user);
        UserResponse response=new UserResponse();
 
        response.setId(savedUser.getId());

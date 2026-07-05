@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.offline_upi.dto.AddMoneyRequest;
 import com.example.offline_upi.dto.WalletResponse;
 import com.example.offline_upi.entity.Wallet;
-import com.example.offline_upi.entity.user;
+import com.example.offline_upi.entity.User;
 import com.example.offline_upi.repository.UserRepository;
 import com.example.offline_upi.repository.WalletRepository;
 
@@ -21,12 +21,12 @@ public class WalletService {
         this.walletRepository=walletRepository;
     }
     public WalletResponse getWalletDetails(String phoneNumber){
-        user User=userRepository
+        User user=userRepository
         .findByPhoneNumber(phoneNumber)
         .orElseThrow(
             () -> new RuntimeException("User Not Found!")
         );
-        Wallet wallet=User.getWallet();
+        Wallet wallet=user.getWallet();
 
         return new WalletResponse(
             wallet.getWalletNumber(),
@@ -37,13 +37,13 @@ public class WalletService {
         }
 
         public WalletResponse addMoney(AddMoneyRequest request){
-            user User=userRepository
+            User user=userRepository
                       .findByPhoneNumber(request.getPhoneNumber())
                       .orElseThrow(
                         () -> new RuntimeException("User not found!")
                       );
 
-            Wallet wallet=User.getWallet();
+            Wallet wallet=user.getWallet();
 
             BigDecimal newBalance=wallet.getBalance().add(request.getAmount());
 
@@ -73,6 +73,18 @@ public class WalletService {
                     wallet.setBalance(wallet.getBalance().subtract(amount));
 
                     walletRepository.save(wallet);
+        }
+        public void creditMoney(String walletNumber,BigDecimal amount){
+            Wallet wallet=walletRepository
+                          .findByWalletNumber(walletNumber)
+                          .orElseThrow(
+                            ()->
+                            new RuntimeException("Wallet Not Found")
+                        
+                        );
+
+            wallet.setBalance(wallet.getBalance().add(amount));
+            walletRepository.save(wallet);
         }
 
     }

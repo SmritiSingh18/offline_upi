@@ -5,12 +5,12 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.offline_upi.entity.user;
+import com.example.offline_upi.entity.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<user,Long> {
-    Optional<user>  findByPhoneNumber(String phoneNumber);
-    Optional<user>  findByUpiId(String upiId);
+public interface UserRepository extends JpaRepository<User,Long> {
+    Optional<User>  findByPhoneNumber(String phoneNumber);
+    Optional<User>  findByUpiId(String upiId);
     boolean existsByPhoneNumber(String phoneNumber);
     boolean existsByUpiId(String upiID);
 

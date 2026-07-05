@@ -29,6 +29,9 @@ public class Transaction {
     private String senderWalletNumber;
 
     private String receiverWalletNumber;
+     
+    @Column(unique = true)
+    private String packedId;
 
     @Column(nullable = false)
     private BigDecimal amount;
@@ -38,7 +41,6 @@ public class Transaction {
     
     private LocalDateTime transactionTime;
 
-    @Column(unique = true)
-    private String referenceId;
+    private LocalDateTime syncedAt;
     
 }
