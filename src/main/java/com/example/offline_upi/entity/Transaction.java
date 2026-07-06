@@ -3,7 +3,7 @@ package com.example.offline_upi.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import org.springframework.transaction.TransactionStatus;
+import com.example.offline_upi.enums.TransactionStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +31,7 @@ public class Transaction {
     private String receiverWalletNumber;
      
     @Column(unique = true)
-    private String packedId;
+    private String packetId;
 
     @Column(nullable = false)
     private BigDecimal amount;

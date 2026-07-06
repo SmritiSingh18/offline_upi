@@ -9,6 +9,6 @@ import com.example.offline_upi.entity.Transaction;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction,Long> {
-    List<Transaction> findBySenderWallerNumberOrReceiverWalletNumber(String senderWalletNumber,String receiverWalletNumber);
-    boolean existsByPackedId(String packetId);
+    List<Transaction> findBySenderWalletNumberOrReceiverWalletNumber(String senderWalletNumber,String receiverWalletNumber);
+    boolean existsByPacketId(String packetId);
 }
