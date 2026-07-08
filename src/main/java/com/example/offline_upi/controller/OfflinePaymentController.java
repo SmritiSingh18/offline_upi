@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class OfflinePaymentController {
     private final OfflinePaymentService offlinePaymentService;
 
-    OfflinePaymentController(OfflinePaymentService offlinePaymentService){
+     public OfflinePaymentController(OfflinePaymentService offlinePaymentService){
         this.offlinePaymentService=offlinePaymentService;
     }
 
     @PostMapping("/pay")
-    public OfflinePaymentResponse createOfflinePayment(@RequestBody OfflinePaymentRequest request) {
+    public OfflinePaymentResponse createOfflinePayment(@RequestBody OfflinePaymentRequest request)  throws Exception{
         return offlinePaymentService.createOfflinePayment(request);
     }
     

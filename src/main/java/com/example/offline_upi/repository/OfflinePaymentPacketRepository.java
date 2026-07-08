@@ -7,6 +7,6 @@ import java.util.Optional;
 
 
 public interface OfflinePaymentPacketRepository extends JpaRepository<OfflinePaymentPacket,Long>{
-    boolean existsByPacketId(String packetId);
-    Optional<OfflinePaymentPacket>findByPacketId(String packetId);
+    boolean existsByPacketHash(String packetHash);
+    Optional<OfflinePaymentPacket>findByPacketHash(String packetHash);
 }

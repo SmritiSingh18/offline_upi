@@ -12,7 +12,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Transaction {
     
     @Id
@@ -29,9 +32,6 @@ public class Transaction {
     private String senderWalletNumber;
 
     private String receiverWalletNumber;
-     
-    @Column(unique = true)
-    private String packetId;
 
     @Column(nullable = false)
     private BigDecimal amount;
@@ -39,8 +39,13 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
     
-    private LocalDateTime transactionTime;
+    private LocalDateTime createdAt;
 
     private LocalDateTime syncedAt;
+
+    @PrePersist
+    public void beforeSave(){
+        this.createdAt=LocalDateTime.now();
+    }
     
 }

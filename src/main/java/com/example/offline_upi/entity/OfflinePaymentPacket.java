@@ -7,8 +7,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,17 +20,33 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "offline_packets")
+@Builder
 public class OfflinePaymentPacket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false,unique = true)
-    private String packetId;
+    private String packetHash;
 
+    @Lob
     @Column(nullable = false,columnDefinition = "TEXT")
-    private String encryptedPayLoad;
+    private String encryptedKey;
+
+    @Lob
+    @Column(nullable = false)
+    private String iv;
+
+    @Lob
+    @Column(nullable = false,columnDefinition = "TEXT")
+    private String cipherText;
+
+    private boolean synced=false;
+
     private LocalDateTime createdAt;
-    private LocalDateTime syncedAt;
-    private boolean synced;
+
+    @PrePersist
+    public void beforeSave(){
+        this.createdAt=LocalDateTime.now();
+    }
 }

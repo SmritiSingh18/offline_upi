@@ -1,7 +1,9 @@
 package com.example.offline_upi.service;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.security.KeyPair;
+import java.util.Base64;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Service;
 
@@ -9,33 +11,47 @@ import com.example.offline_upi.dto.OfflinePaymentRequest;
 import com.example.offline_upi.dto.OfflinePaymentResponse;
 import com.example.offline_upi.entity.OfflinePaymentPacket;
 import com.example.offline_upi.repository.OfflinePaymentPacketRepository;
-import com.example.offline_upi.util.EncryptionUtil;
+import com.example.offline_upi.util.AESUtil;
+import com.example.offline_upi.util.PacketHashUtil;
+import com.example.offline_upi.util.RSAUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class OfflinePaymentService {
     private final OfflinePaymentPacketRepository packetRepository;
-    private final EncryptionUtil encryptionUtil;
+    private final AESUtil aesUtil;
+    private final RSAUtil rsaUtil;
+    private final PacketHashUtil packetHashUtil;
 
-    OfflinePaymentService(OfflinePaymentPacketRepository packetRepository,EncryptionUtil encryptionUtil){
-        this.packetRepository=packetRepository;
-        this.encryptionUtil=encryptionUtil;
+    OfflinePaymentService(OfflinePaymentPacketRepository packetRepository,AESUtil aesUtil,RSAUtil rsaUtil,PacketHashUtil packetHashUtil){
+       this.packetRepository=packetRepository;
+       this.aesUtil=aesUtil;
+       this.rsaUtil=rsaUtil;
+       this.packetHashUtil=packetHashUtil;
     }
+    public OfflinePaymentResponse createOfflinePayment(OfflinePaymentRequest request)throws Exception{
+        ObjectMapper mapper=new ObjectMapper();
+        String paymentJson=mapper.writeValueAsString(request);
 
-    public OfflinePaymentResponse createOfflinePayment(OfflinePaymentRequest request){
-        String packetId=UUID.randomUUID().toString();
+        SecretKey aesKey=aesUtil.generateKey();
+        byte[] iv=aesUtil.generateIV();
+        String cipherText=aesUtil.encrypt(paymentJson, aesKey, iv);
+        KeyPair keyPair=rsaUtil.generateKeyPair();
+        String encryptedKey=rsaUtil.encrypt(aesKey.getEncoded(),keyPair.getPublic());
+        String packetHash=packetHashUtil.generateHash(cipherText+encryptedKey);
+        OfflinePaymentPacket packet=OfflinePaymentPacket.builder()
+                                    .packetHash(packetHash)
+                                    .encryptedKey(encryptedKey)
+                                    .iv(Base64.getEncoder().encodeToString(iv))
+                                    .cipherText(cipherText)
+                                    .synced(false)
+                                    .build();
+                                packetRepository.save(packet);
 
-        String payload=packetId+"|"+request.getSenderWalletNumber()+"|"+request.getReceiverWalletNumber()+"|"+request.getAmount();
-        String encrypted=encryptionUtil.encrypt(payload);
-
-        OfflinePaymentPacket packet=new OfflinePaymentPacket();
-        packet.setPacketId(packetId);
-        packet.setEncryptedPayLoad(encrypted);
-        packet.setCreatedAt(LocalDateTime.now());
-        packet.setSynced(false);
-        packetRepository.save(packet);
-
-        return new OfflinePaymentResponse(packetId, encrypted);
+                                return OfflinePaymentResponse.builder()
+                                       .packetHash(packetHash)
+                                       .message("Offline Payment Packet Generated successfully")
+                                       .build();
     }
-
-    
 }
+    
