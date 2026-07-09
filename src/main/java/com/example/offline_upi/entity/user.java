@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
+
 @Data
 @Entity
 @Table(name = "users")
@@ -36,6 +37,12 @@ public class User{
         fetch = FetchType.LAZY
     )
     private Wallet wallet;
+
+    @Column(columnDefinition = "TEXT")
+    private String publicKey;
+
+    @Column(columnDefinition = "TEXT")
+    private String privateKey;
 
     
 }

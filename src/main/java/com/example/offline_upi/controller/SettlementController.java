@@ -21,7 +21,7 @@ public class SettlementController {
     }
 
     @PostMapping("/{packetHash}")
-    public SettlementResponse settlePayment(@PathVariable String packetHash) {
+    public SettlementResponse settlePayment(@PathVariable String packetHash)throws Exception {
         return settlementService.settlePayment(packetHash);
     }
     

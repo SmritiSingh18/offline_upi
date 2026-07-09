@@ -28,12 +28,14 @@ public class OfflinePaymentPacket {
 
     @Column(nullable = false,unique = true)
     private String packetHash;
+     
+    @Column(nullable =  false)
+    private String receiverWalletNumber;
 
     @Lob
     @Column(nullable = false,columnDefinition = "TEXT")
     private String encryptedKey;
 
-    @Lob
     @Column(nullable = false)
     private String iv;
 

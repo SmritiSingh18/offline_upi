@@ -53,4 +53,8 @@ public class AESUtil {
 
         return new String(decrypted);
     }
+
+    public SecretKey getKeyFromBytes(byte[] keyBytes){
+        return new javax.crypto.spec.SecretKeySpec(keyBytes, "AES");
+    }
 }

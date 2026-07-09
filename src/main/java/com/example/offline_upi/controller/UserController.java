@@ -19,7 +19,7 @@ public class UserController {
         this.userService=userService;
     }
     @PostMapping("/register")
-    public UserResponse registerUser(@RequestBody RegisterUserRequest request) {
+    public UserResponse registerUser(@RequestBody RegisterUserRequest request) throws Exception{
        
         return userService.registerUser(request);
     }
