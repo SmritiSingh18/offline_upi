@@ -32,12 +32,17 @@ public class Transaction {
     private String senderWalletNumber;
 
     private String receiverWalletNumber;
+    
+    @Column(unique = true)
+    private String packetId;
 
     @Column(nullable = false)
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
+
+    private LocalDateTime transactionTime;
     
     private LocalDateTime createdAt;
 

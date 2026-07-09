@@ -1,5 +1,6 @@
 package com.example.offline_upi.service;
 
+import java.time.LocalDateTime;
 import java.util.Base64;
 
 import javax.crypto.SecretKey;
@@ -9,8 +10,11 @@ import org.springframework.stereotype.Service;
 import com.example.offline_upi.dto.OfflinePaymentRequest;
 import com.example.offline_upi.dto.SettlementResponse;
 import com.example.offline_upi.entity.OfflinePaymentPacket;
+import com.example.offline_upi.entity.Transaction;
 import com.example.offline_upi.entity.Wallet;
+import com.example.offline_upi.enums.TransactionStatus;
 import com.example.offline_upi.repository.OfflinePaymentPacketRepository;
+import com.example.offline_upi.repository.TransactionRepository;
 import com.example.offline_upi.repository.WalletRepository;
 import com.example.offline_upi.util.AESUtil;
 import com.example.offline_upi.util.RSAUtil;
@@ -24,11 +28,13 @@ public class SettlementService {
     private final WalletRepository walletRepository;
     private final AESUtil aesUtil;
     private final RSAUtil rsaUtil; 
-    SettlementService(OfflinePaymentPacketRepository packetRepository,WalletRepository walletRepository,AESUtil aesUtil,RSAUtil rsaUtil){
+    private final TransactionRepository transactionRepository;
+    SettlementService(OfflinePaymentPacketRepository packetRepository,WalletRepository walletRepository,AESUtil aesUtil,RSAUtil rsaUtil,TransactionRepository transactionRepository){
         this.packetRepository=packetRepository;
         this.walletRepository=walletRepository;
         this.aesUtil=aesUtil;
         this.rsaUtil=rsaUtil;
+        this.transactionRepository=transactionRepository;
     }
 
     @Transactional
@@ -71,7 +77,17 @@ public class SettlementService {
 
         walletRepository.save(senderWallet);
         walletRepository.save(receiverWallet);
-
+        
+        Transaction transaction=Transaction.builder()
+                                .senderWalletNumber(payment.getSenderWalletNumber())
+                                .receiverWalletNumber(payment.getReceiverWalletNumber())
+                                .packetId(packetHash)
+                                .amount(payment.getAmount())
+                                .status(TransactionStatus.SUCCESS)
+                                .transactionTime(LocalDateTime.now())
+                                .syncedAt(LocalDateTime.now())
+                                .build();
+        transactionRepository.save(transaction);
         packet.setSynced(true);
         packetRepository.save(packet);
     

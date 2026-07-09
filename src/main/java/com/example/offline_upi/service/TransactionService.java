@@ -1,5 +1,7 @@
 package com.example.offline_upi.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.offline_upi.dto.TransactionResponse;
@@ -57,5 +59,9 @@ public class TransactionService {
                 .status(save.getStatus())
                 .createdAt(save.getCreatedAt())
                 .build();
+}
+
+public List<Transaction> getHistory(String  walletNumber){
+    return transactionRepository.findBySenderWalletNumberOrReceiverWalletNumber(walletNumber, walletNumber);
 }
 }
